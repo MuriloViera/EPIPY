@@ -5,6 +5,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk #Precisa baixar
 import os
 import numpy as np #Precisa baixar provavelmente
+import face_recognition
 
 #Função tela sobre
 def telaSobre():
