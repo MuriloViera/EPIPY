@@ -125,5 +125,7 @@ loginButton.place(x=165, y=200)
 registerButton.place(x=165, y=250)
 sobreButton.place(x=440, y=462)
 titulo.place(x=115, y=100)
+version=tk.Label(tela_principal, text='Versão 1.0.0', font=('Terminal', '10', 'bold italic'))
+version.place(x=5, y=480)
 
 tela_principal.mainloop() #Quero que ela fique rodando
