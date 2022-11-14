@@ -8,6 +8,18 @@ import os
 import numpy as np #Precisa baixar provavelmente
 import face_recognition
 
+#Função tela info
+def telaInfo():
+    tela_info = tk.Toplevel(tela_principal)
+    screen_width = tela_info.winfo_screenwidth()
+    screen_width = (screen_width/2) - (520/2)
+    screen_height = tela_info.winfo_screenheight()
+    screen_height = (screen_height/2) - (245/2)  
+    tela_info.geometry('520x250+%d+%d' % (screen_width, screen_height)) #Tamanho
+    tela_info.title('Info')
+    informations = tk.Label(tela_info,justify=tk.LEFT,bd=2,wraplength='500',relief='solid',font=('Terminal', '16'),text="Informações sobre a movimentação:\n1) Informe nos campos a cima o seu código individual, codigo dos EPIS que deseja e ao lado a quantidade desse mesmo EPI.\n2) Tente posicionar sua face no centro do retangulo da camera deixando toda sua cabeça fique visivel.\n3) Se possivel remova óculos e bonés ou qualquer outro acessório que tampe ou esconda sua face.\n4) Por fim, olhe para a camera e clique no botão registrar ou enter no teclado sem desviar o olhar.\n5) Uma tela de confirmação aparece oficializando a movimentação casa nao haja erro")
+    informations.place(x=5, y=5)
+
 #Função tela movimentação
 def telaMov():
     tela_principal.withdraw()
@@ -15,48 +27,51 @@ def telaMov():
     screen_width = tela_mov.winfo_screenwidth()
     screen_width = (screen_width/2) - (1050/2)
     screen_height = tela_mov.winfo_screenheight()
-    screen_height = (screen_height/2) - (500/2)  
-    tela_mov.geometry('1050x500+%d+%d' % (screen_width, screen_height)) #Tamanho
+    screen_height = (screen_height/2) - (380/2)  
+    tela_mov.geometry('975x375+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_mov.title('Movimentação')
     webcam = tk.Label(tela_mov, relief='solid', width=450, height=350)
-    webcam.place(x=5, y=5)
-    informations = tk.Label(tela_mov,justify=tk.LEFT,bd=2,wraplength='1100',relief='solid',font=('Terminal', '16'),text="Informações:\n1) Informe nos campos a cima o seu código individual, codigo dos EPIS que deseja e ao lado a quantidade desse mesmo EPI.\n2) Tente posicionar sua face no centro do retangulo da camera deixando toda sua cabeça fique visivel.\n3) Se possivel remova óculos e bonés ou qualquer outro acessório que tampe ou esconda sua face.\n4) Por fim, olhe para a camera e clique no botão registrar ou enter no teclado sem desviar o olhar.\n5) Uma tela de confirmação aparece oficializando a movimentação casa nao haja erro")
-    informations.place(x=5, y=365)
-    codLabel = tk.Label(tela_mov, font=('System', '17', 'bold'), text='Código de funcionário:')
-    codLabel.place(x=490, y=5)
+    webcam.place(x=5, y=10)
+    codLabel = tk.Label(tela_mov, font=('Terminal', '15'), text='Código de funcionário:')
+    codLabel.place(x=490, y=10)
     cod = tk.Entry(tela_mov, width=10, font=('Terminal','15'))
-    cod.place(x=790, y=15)
+    cod.place(x=720, y=13)
     listaEpis = ['8989 - Luvas', '8787 - Capacete', '9095 - Mascara']
     #listaEpis.append('9090 - Fone') Adicionar 1
     #listaEpis.extend('9090 - Fone', '8765 - Creme') Adicionar mais de 1
 
-    codEpi1Label = tk.Label(tela_mov, font=('System', '17', 'bold'), text='Código do EPI:')
+    codEpi1Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
     codEpi1Label.place(x=490, y=55)
     epis1 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
-    epis1.place(x=690,y=63)
+    epis1.place(x=635,y=55)
 
-    codEpi2Label = tk.Label(tela_mov, font=('System', '17', 'bold'), text='Código do EPI:')
+    codEpi2Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
     codEpi2Label.place(x=490, y=105)
     epis2 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
-    epis2.place(x=690,y=113)
+    epis2.place(x=635,y=105)
 
-    codEpi3Label = tk.Label(tela_mov, font=('System', '17', 'bold'), text='Código do EPI:')
+    codEpi3Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
     codEpi3Label.place(x=490, y=155)
     epis3 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
-    epis3.place(x=690,y=163)
+    epis3.place(x=635,y=155)
 
-    codEpi4Label = tk.Label(tela_mov, font=('System', '17', 'bold'), text='Código do EPI:')
+    codEpi4Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
     codEpi4Label.place(x=490, y=205)
     epis1 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
-    epis1.place(x=690,y=213)
+    epis1.place(x=635,y=205)
 
-    codEpi5Label = tk.Label(tela_mov, font=('System', '17', 'bold'), text='Código do EPI:')
+    codEpi5Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
     codEpi5Label.place(x=490, y=255)
     epis5 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
-    epis5.place(x=690,y=263)
+    epis5.place(x=635,y=255)
 
-    registrarButton = tk.Button(tela_mov, text="Movimentar",font=('System','3'),height=2, width=15, border=10, activebackground='green')
-    registrarButton.place(x=690, y=300)
+    #Botoes
+    registrarButton = tk.Button(tela_mov, text="Verificar",font=('System','3'),height=2, width=15, border=10, activebackground='green')
+    registrarButton.place(x=580, y=300)
+    movimentarButton = tk.Button(tela_mov, text="Movimentar",state=DISABLED,font=('System','3'),height=2, width=15, border=10, activebackground='green')
+    movimentarButton.place(x=750, y=300)
+    infoButton = tk.Button(tela_mov, text="?", command=lambda:telaInfo() ,height=1,font=('System'),border=5)
+    infoButton.place(x=948, y=340)
     
     #Acessar a camera
     camera = cv.VideoCapture(0)
