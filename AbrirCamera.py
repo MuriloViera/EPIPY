@@ -9,7 +9,7 @@ import numpy as np #Precisa baixar provavelmente
 import face_recognition
 
 #Função tela info
-def telaInfo():
+def telaInfo(tela):
     tela_info = tk.Toplevel(tela_principal)
     screen_width = tela_info.winfo_screenwidth()
     screen_width = (screen_width/2) - (520/2)
@@ -17,7 +17,11 @@ def telaInfo():
     screen_height = (screen_height/2) - (245/2)  
     tela_info.geometry('520x250+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_info.title('Info')
-    informations = tk.Label(tela_info,justify=tk.LEFT,bd=2,wraplength='500',relief='solid',font=('Terminal', '16'),text="Informações sobre a movimentação:\n1) Informe nos campos a cima o seu código individual, codigo dos EPIS que deseja e ao lado a quantidade desse mesmo EPI.\n2) Tente posicionar sua face no centro do retangulo da camera deixando toda sua cabeça fique visivel.\n3) Se possivel remova óculos e bonés ou qualquer outro acessório que tampe ou esconda sua face.\n4) Por fim, olhe para a camera e clique no botão registrar ou enter no teclado sem desviar o olhar.\n5) Uma tela de confirmação aparece oficializando a movimentação casa nao haja erro")
+    if(tela == 0): #Tela mov
+        text = "Informações sobre a movimentação:\n1) Informe nos campos a cima o seu código individual, codigo dos EPIS que deseja e ao lado a quantidade desse mesmo EPI.\n2) Tente posicionar sua face no centro do retangulo da camera deixando toda sua cabeça fique visivel.\n3) Se possivel remova óculos e bonés ou qualquer outro acessório que tampe ou esconda sua face.\n4) Por fim, olhe para a camera e clique no botão registrar ou enter no teclado sem desviar o olhar.\n5) Uma tela de confirmação aparece oficializando a movimentação casa não haja erro."
+    elif(tela == 1): #Tela reg
+        text = "Informações sobre o registro: \n1) Informe no campo a baixo o seu código individual.\n2) Tente posicionar sua face no centro do retangulo da camera de forma com que toda sua cabeça fique visivel.\n3) Se possivel remova óculos e bonés ou qualquer outro acessório que tampe ou esconda sua face.\n4) Por fim, olhe para a camera e clique no botão registrar ou enter no teclado sem desviar o olhar.\n5) Uma tela de confirmação aparecerá caso a operação de registro seja sucedida sem erros."
+    informations = tk.Label(tela_info,justify=tk.LEFT,bd=2,wraplength='500',relief='solid',font=('Terminal', '16'),text=text)
     informations.place(x=5, y=5)
 
 #Função tela movimentação
@@ -66,13 +70,21 @@ def telaMov():
     epis5.place(x=635,y=255)
 
     #Botoes
-    registrarButton = tk.Button(tela_mov, text="Verificar",font=('System','3'),height=2, width=15, border=10, activebackground='green')
-    registrarButton.place(x=580, y=300)
     movimentarButton = tk.Button(tela_mov, text="Movimentar",state=DISABLED,font=('System','3'),height=2, width=15, border=10, activebackground='green')
     movimentarButton.place(x=750, y=300)
-    infoButton = tk.Button(tela_mov, text="?", command=lambda:telaInfo() ,height=1,font=('System'),border=5)
+    registrarButton = tk.Button(tela_mov, text="Verificar",command=lambda:verificar(True),font=('System','3'),height=2, width=15, border=10, activebackground='green')
+    registrarButton.place(x=580, y=300)
+    infoButton = tk.Button(tela_mov, text="?", command=lambda:telaInfo(0) ,height=1,font=('System'),border=5)
     infoButton.place(x=948, y=340)
     
+    #Função verificar
+    def verificar(state):
+        if(state):
+            messagebox.showinfo("Sucesso", "Sua face foi verificada!")
+            movimentarButton.config(state=NORMAL)
+        else:
+            messagebox.showerror("Erro", "Sua face não foi verificada!")
+        
     #Acessar a camera
     camera = cv.VideoCapture(0)
     pegarFrames(camera,webcam)#Capturar os frames com a webcam
@@ -112,29 +124,38 @@ def telaSobre():
 
 #Função tela registro
 def telaRegistro():
+    #Configurações tela
     tela_principal.withdraw()
     tela_registro = tk.Toplevel(tela_principal)
     screen_width = tela_registro.winfo_screenwidth()
-    screen_width = (screen_width/2) - (1000/2)
+    screen_width = (screen_width/2) - (975/2)
     screen_height = tela_registro.winfo_screenheight()
-    screen_height = (screen_height/2) - (500/2)  
-    tela_registro.geometry('1055x500+%d+%d' % (screen_width, screen_height)) #Tamanho
+    screen_height = (screen_height/2) - (375/2)  
+    tela_registro.geometry('975x375+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_registro.title('Registro')
-    webcam = tk.Label(tela_registro, relief='solid')
-    webcam.place(x=2, y=10)
-    cod = tk.Entry(tela_registro, width=10, font=('30'))
-    cod.place(x=755, y=335)
-    name = tk.Entry(tela_registro, width=33, font=('20'))
-    name.place(x=740, y=375)
-    registrarButton = tk.Button(tela_registro, text="Registrar",font=('System','3'), command=lambda: registrar(cod, camera, tela_registro, name) ,height=1, width=15, border=10, activebackground='green')
-    registrarButton.place(x=770, y=420)
-    informations = tk.Label(tela_registro,justify=tk.CENTER,bd=2,relief='solid',wraplength=400,font=('Terminal', '16'),text="Informações: \n 1) Informe no campo a baixo o seu código individual \n 2) Tente posicionar sua face no centro do retangulo da camera de forma com que toda sua cabeça fique visivel \n 3) Se possivel remova óculos e bonés ou qualquer outro acessório que tampe ou esconda sua face \n 4) Por fim, olhe para a camera e clique no botão registrar ou enter no teclado sem desviar o olhar \n 5) Caso sua face seja registrada uma mensagem aparecerá na tela, caso algum erro ocorra uma janela de informações sobre o erro também aparecerá")
-    informations.place(x=650, y=10)
-    codLabel = tk.Label(tela_registro, font=('System', '17', 'bold'), text='Código:')
-    codLabel.place(x=650, y=325)
-    nameLabel = tk.Label(tela_registro, font=('System', '17', 'bold'), text='Nome:')
-    nameLabel.place(x=650, y=365)
 
+    #Webcam
+    webcam = tk.Label(tela_registro, relief='solid', width=450, height=350)
+    webcam.place(x=5, y=10)
+
+    #Linha codigo
+    cod = tk.Entry(tela_registro, width=10, font=('Terminal', '15'))
+    cod.place(x=595, y=120)
+    codLabel = tk.Label(tela_registro, font=('System', '17', 'bold'), text='Código:')
+    codLabel.place(x=490, y=110)
+
+    #Linha nome
+    name = tk.Entry(tela_registro, width=33, font=('Terminal', '15'))
+    name.place(x=580,y=165)
+    nameLabel = tk.Label(tela_registro, font=('System', '17', 'bold'), text='Nome:')
+    nameLabel.place(x=490, y=155)
+
+    #Botao
+    registrarButton = tk.Button(tela_registro, text="Registrar",font=('System','3'), command=lambda: registrar(cod, camera, tela_registro, name) ,height=1, width=15, border=10, activebackground='green')
+    registrarButton.place(x=650, y=220)
+    infoButton = tk.Button(tela_registro, text="?", command=lambda:telaInfo(1) ,height=1,font=('System'),border=5)
+    infoButton.place(x=948, y=340)
+    
     #Acessar a camera
     camera = cv.VideoCapture(0)
     pegarFrames(camera,webcam)#Capturar os frames com a webcam
@@ -175,7 +196,7 @@ def registrar(cod,camera, tela_registro, name):
         
             faceFinal = cv.medianBlur(face, 1)  
             faceFinal = cv.morphologyEx(faceFinal,cv.MORPH_CLOSE, kernel, iterations=1)
-            #Cortar a imagem faceFinal = faceFinal[65:350+65 ,145:450+145]
+            faceFinal = faceFinal[65:350+65 ,95:450+95]
             cv.imwrite('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' , faceFinal)
             messagebox.showinfo("Sucesso", "Seu registro foi efetuado com sucesso!")
             tela_registro.destroy()
