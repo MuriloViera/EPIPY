@@ -72,14 +72,15 @@ def telaMov():
     #Botoes
     movimentarButton = tk.Button(tela_mov, text="Movimentar",state=DISABLED,font=('System','3'),height=2, width=15, border=10, activebackground='green')
     movimentarButton.place(x=750, y=300)
-    registrarButton = tk.Button(tela_mov, text="Verificar",command=lambda:verificar(True),font=('System','3'),height=2, width=15, border=10, activebackground='green')
+    registrarButton = tk.Button(tela_mov, text="Verificar",command=lambda:verificar(cod),font=('System','3'),height=2, width=15, border=10, activebackground='green')
     registrarButton.place(x=580, y=300)
     infoButton = tk.Button(tela_mov, text="?", command=lambda:telaInfo(0) ,height=1,font=('System'),border=5)
     infoButton.place(x=948, y=340)
     
     #Função verificar
-    def verificar(state):
-        if(state):
+    def verificar(cod):
+        cod = cod.get()
+        if(os.path.exists('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' )):
             messagebox.showinfo("Sucesso", "Sua face foi verificada!")
             movimentarButton.config(state=NORMAL)
         else:
