@@ -5,6 +5,7 @@ from tkinter import messagebox
 from tkinter import ttk as tkk
 from PIL import Image, ImageTk #Precisa baixar
 import os
+import csv
 import numpy as np #Precisa baixar provavelmente
 import face_recognition
 
@@ -189,9 +190,15 @@ def registrar(cod,camera, tela_registro, name):
 
             if(os.path.exists('C:/EPIPY_CONTROL/REGISTRO') == False):
                 os.makedirs('C:/EPIPY_CONTROL/REGISTRO')
-
+                with open('C:/EPIPY_CONTROL/REGISTRO/registroFuncionarios.csv', 'w', newline='') as f:
+                    writer2 = csv.DictWriter(f, fieldnames=['Código','Nome','Face']) #Titulos
+                    writer2.writeheader()
+                
             if(os.path.exists('C:/EPIPY_CONTROL/MOVIMENTACAO') == False):
                 os.makedirs('C:/EPIPY_CONTROL/MOVIMENTACAO')
+
+            if(os.path.exists('C:/EPIPY_CONTROL/EPIS') == False):
+                os.makedirs('C:/EPIPY_CONTROL/EPIS')    
 
             kernel = np.ones((2,2),np.uint8)
         
@@ -199,6 +206,11 @@ def registrar(cod,camera, tela_registro, name):
             faceFinal = cv.morphologyEx(faceFinal,cv.MORPH_CLOSE, kernel, iterations=1)
             faceFinal = faceFinal[65:350+65 ,95:450+95]
             cv.imwrite('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' , faceFinal)
+
+            with open('C:/EPIPY_CONTROL/REGISTRO/registroFuncionarios.csv', 'a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([cod] + [name] + ['Face_'+ cod +'.jpg'])
+
             messagebox.showinfo("Sucesso", "Seu registro foi efetuado com sucesso!")
             tela_registro.destroy()
         else:
