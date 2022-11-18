@@ -246,6 +246,7 @@ screen_width = (screen_width/2) - (500/2)
 screen_height = tela_principal.winfo_screenheight()
 screen_height = (screen_height/2) - (500/2)  
 
+#Vai caraio
 #icone = PhotoImage(file='icon.png')
 #tela_principal.iconphoto(True,icone)
 
