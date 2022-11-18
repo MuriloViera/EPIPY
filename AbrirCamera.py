@@ -246,6 +246,9 @@ screen_width = (screen_width/2) - (500/2)
 screen_height = tela_principal.winfo_screenheight()
 screen_height = (screen_height/2) - (500/2)  
 
+#icone = PhotoImage(file='icon.png')
+#tela_principal.iconphoto(True,icone)
+
 tela_principal.geometry('500x500+%d+%d' % (screen_width, screen_height)) #Tamanho
 titulo=tk.Label(tela_principal, text='Controle de Entrega de EPI', font=('Terminal', '16', 'bold italic'))
 loginButton = tk.Button(tela_principal,font=('System','3'), text="Movimento", command=lambda:telaMov(), height=1, width=20, border=10)
