@@ -81,11 +81,33 @@ def telaMov():
     #Função verificar
     def verificar(cod):
         cod = cod.get()
-        if(os.path.exists('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' )):
-            messagebox.showinfo("Sucesso", "Sua face foi verificada!")
-            movimentarButton.config(state=NORMAL)
+        ret, faceAtual = camera.read()
+    
+        if os.path.exists('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' ):
+
+            faceRegistrada = cv.imread('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg')
+            faceRegistrada = cv.cvtColor(faceRegistrada, cv.COLOR_BGR2RGB)
+            faceRegCod = face_recognition.face_encodings(faceRegistrada, num_jitters=15)
+
+            faceAtual = cv.imread('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg')
+            faceAtual = cv.cvtColor(faceAtual, cv.COLOR_BGR2RGB)
+            faceActCod = face_recognition.face_encodings(faceAtual)
+
+            if len(faceRegCod) or len(faceActCod) > 0:
+                faceRegCod = faceRegCod[0]
+                faceActCod = faceActCod[0]
+
+            result = face_recognition.compare_faces([faceRegCod], faceActCod, tolerance=0.5)
+            print(result)
+
+            if(result[0]):
+                messagebox.showinfo("Sucesso", "Sua face foi verificada!")
+                movimentarButton.config(state=NORMAL)
+            else:
+                messagebox.showerror("Erro", "Sua face não foi verificada!")
+
         else:
-            messagebox.showerror("Erro", "Sua face não foi verificada!")
+            messagebox.showerror("Erro", "Sua face não está cadastrada!")
         
     #Acessar a camera
     camera = cv.VideoCapture(0)
