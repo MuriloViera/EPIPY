@@ -81,16 +81,15 @@ def telaMov():
     #Função verificar
     def verificar(cod):
         cod = cod.get()
-        ret, faceAtual = camera.read()
+        ret, face = camera.read()
     
         if os.path.exists('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' ):
 
             faceRegistrada = cv.imread('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg')
             faceRegistrada = cv.cvtColor(faceRegistrada, cv.COLOR_BGR2RGB)
-            faceRegCod = face_recognition.face_encodings(faceRegistrada, num_jitters=15)
+            faceRegCod = face_recognition.face_encodings(faceRegistrada, num_jitters=10)
 
-            faceAtual = cv.imread('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg')
-            faceAtual = cv.cvtColor(faceAtual, cv.COLOR_BGR2RGB)
+            faceAtual = face[65:350+65 ,95:450+95]
             faceActCod = face_recognition.face_encodings(faceAtual)
 
             if len(faceRegCod) or len(faceActCod) > 0:
@@ -164,15 +163,15 @@ def telaRegistro():
 
     #Linha codigo
     cod = tk.Entry(tela_registro, width=10, font=('Terminal', '15'))
-    cod.place(x=595, y=120)
-    codLabel = tk.Label(tela_registro, font=('System', '17', 'bold'), text='Código:')
-    codLabel.place(x=490, y=110)
+    cod.place(x=675, y=120)
+    codLabel = tk.Label(tela_registro, font=('Terminal', '17'), text='Código:')
+    codLabel.place(x=600, y=117)
 
     #Linha nome
     name = tk.Entry(tela_registro, width=33, font=('Terminal', '15'))
     name.place(x=580,y=165)
-    nameLabel = tk.Label(tela_registro, font=('System', '17', 'bold'), text='Nome:')
-    nameLabel.place(x=490, y=155)
+    nameLabel = tk.Label(tela_registro, font=('Terminal', '17'), text='Nome:')
+    nameLabel.place(x=520, y=162.5)
 
     #Botao
     registrarButton = tk.Button(tela_registro, text="Registrar",font=('System','3'), command=lambda: registrar(cod, camera, tela_registro, name) ,height=1, width=15, border=10, activebackground='green')
@@ -241,7 +240,7 @@ def registrar(cod,camera, tela_registro, name):
         messagebox.showerror("Erro", "Por favor, verifique o seu código ou nome e os escreva novamente certificando de que existem apenas elementos numéricos no campo código e apenas letras no campo nome!")
 
 #Criar tela principal--------------------------------------------------------------------------------------------------------------------
-tela_principal = tk.Tk(className='Webcam')
+tela_principal = tk.Tk(className='Epipy')
 screen_width = tela_principal.winfo_screenwidth()
 screen_width = (screen_width/2) - (500/2)
 screen_height = tela_principal.winfo_screenheight()
