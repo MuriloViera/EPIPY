@@ -1,13 +1,13 @@
 import cv2 as cv #Precisa baixar
 import tkinter as tk #Precisa baixar
-from tkinter import *
+from tkinter import * 
 from tkinter import messagebox
 from tkinter import ttk as tkk
 from PIL import Image, ImageTk #Precisa baixar
 import os
-import csv
 import numpy as np #Precisa baixar provavelmente
 import face_recognition
+import sqlite3
 
 #Função tela info
 def telaInfo(tela):
@@ -205,21 +205,6 @@ def registrar(cod,camera, tela_registro, name):
     if((cod.isdigit()) and (all(n.isalpha() for n in name.split(" ")))):
         if(len(cod) <= 10):
             ret, face = camera.read() #Aqui to pegando 1 frame no momento em que o cara clicar no register
-        
-            if(os.path.exists('C:/EPIPY_CONTROL/FACES') == False):
-                os.makedirs('C:/EPIPY_CONTROL/FACES')
-
-            if(os.path.exists('C:/EPIPY_CONTROL/REGISTRO') == False):
-                os.makedirs('C:/EPIPY_CONTROL/REGISTRO')
-                with open('C:/EPIPY_CONTROL/REGISTRO/registroFuncionarios.csv', 'w', newline='') as f:
-                    writer2 = csv.DictWriter(f, fieldnames=['Código','Nome','Face']) #Titulos
-                    writer2.writeheader()
-                
-            if(os.path.exists('C:/EPIPY_CONTROL/MOVIMENTACAO') == False):
-                os.makedirs('C:/EPIPY_CONTROL/MOVIMENTACAO')
-
-            if(os.path.exists('C:/EPIPY_CONTROL/EPIS') == False):
-                os.makedirs('C:/EPIPY_CONTROL/EPIS')    
 
             kernel = np.ones((2,2),np.uint8)
         
@@ -228,16 +213,32 @@ def registrar(cod,camera, tela_registro, name):
             faceFinal = faceFinal[65:350+65 ,95:450+95]
             cv.imwrite('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' , faceFinal)
 
-            with open('C:/EPIPY_CONTROL/REGISTRO/registroFuncionarios.csv', 'a', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow([cod] + [name] + ['Face_'+ cod +'.jpg'])
-
             messagebox.showinfo("Sucesso", "Seu registro foi efetuado com sucesso!")
             tela_registro.destroy()
         else:
            messagebox.showerror("Erro", "Por favor, verifique o seu código e o escreva novamente certificando de que a quantidade de números esteja correta!")     
     else:
         messagebox.showerror("Erro", "Por favor, verifique o seu código ou nome e os escreva novamente certificando de que existem apenas elementos numéricos no campo código e apenas letras no campo nome!")
+
+#Criação das pastas-------------------------------------------------------------------------------------------------------------------
+if(os.path.exists('C:/EPIPY_CONTROL/FACES') == False):
+    os.makedirs('C:/EPIPY_CONTROL/FACES')
+
+    if(os.path.exists('C:/EPIPY_CONTROL/REGISTRO') == False):
+        os.makedirs('C:/EPIPY_CONTROL/REGISTRO')
+
+        banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sql.db')
+
+        cursor = banco.Cursor()
+
+        cursor.execute('CREATE TABLE REGISTRO (nome text, idade integer, email text)')   
+
+    if(os.path.exists('C:/EPIPY_CONTROL/MOVIMENTACAO') == False):
+        os.makedirs('C:/EPIPY_CONTROL/MOVIMENTACAO')
+
+    if(os.path.exists('C:/EPIPY_CONTROL/EPIS') == False):
+        os.makedirs('C:/EPIPY_CONTROL/EPIS')    
+
 
 #Criar tela principal--------------------------------------------------------------------------------------------------------------------
 tela_principal = tk.Tk(className='Epipy')
