@@ -224,21 +224,21 @@ def registrar(cod,camera, tela_registro, name):
 if(os.path.exists('C:/EPIPY_CONTROL/FACES') == False):
     os.makedirs('C:/EPIPY_CONTROL/FACES')
 
-    if(os.path.exists('C:/EPIPY_CONTROL/REGISTRO') == False):
+    if(os.path.exists('C:/EPIPY_CONTROL/REGISTROS') == False):
         os.makedirs('C:/EPIPY_CONTROL/REGISTRO')
 
-        banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sql.db')
+        #Criar banco e criar as tabelas
+        banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sqlite.db')
 
-        cursor = banco.Cursor()
+        cursor = banco.cursor()
 
-        cursor.execute('CREATE TABLE REGISTRO (nome text, idade integer, email text)')   
+        cursor.execute('CREATE TABLE IF NOT EXISTS REGISTRO (cod integer, nome text, PRIMARY KEY (cod))')
+        cursor.execute('CREATE TABLE IF NOT EXISTS MOVIMENTACAO (cod integer, nome text, codEpi integer, data text, horario text)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS EPIS (nome text, idade integer, email text)')
 
-    if(os.path.exists('C:/EPIPY_CONTROL/MOVIMENTACAO') == False):
-        os.makedirs('C:/EPIPY_CONTROL/MOVIMENTACAO')
+        #cursor.execute("INSERT INTO REGISTRO VALUES('Maria', 40, 'maria@gmail.com')")  
 
-    if(os.path.exists('C:/EPIPY_CONTROL/EPIS') == False):
-        os.makedirs('C:/EPIPY_CONTROL/EPIS')    
-
+        banco.commit()
 
 #Criar tela principal--------------------------------------------------------------------------------------------------------------------
 tela_principal = tk.Tk(className='Epipy')
