@@ -1,5 +1,6 @@
 import cv2 as cv #Precisa baixar
 import tkinter as tk #Precisa baixar
+import sqlite3
 from tkinter import * 
 from tkinter import messagebox
 from tkinter import ttk as tkk
@@ -7,7 +8,7 @@ from PIL import Image, ImageTk #Precisa baixar
 import os
 import numpy as np #Precisa baixar provavelmente
 import face_recognition
-import sqlite3
+
 
 #Função tela info
 def telaInfo(tela):
@@ -213,6 +214,11 @@ def registrar(cod,camera, tela_registro, name):
             faceFinal = faceFinal[65:350+65 ,95:450+95]
             cv.imwrite('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' , faceFinal)
 
+            banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sqlite.db')
+            cursor = banco.cursor()
+            cursor.execute("INSERT INTO REGISTRO (cod, nome) VALUES(?, ?)", (cod, name))
+            banco.commit()
+
             messagebox.showinfo("Sucesso", "Seu registro foi efetuado com sucesso!")
             tela_registro.destroy()
         else:
@@ -232,9 +238,9 @@ if(os.path.exists('C:/EPIPY_CONTROL/FACES') == False):
 
         cursor = banco.cursor()
 
-        cursor.execute('CREATE TABLE IF NOT EXISTS REGISTRO (cod integer, nome text, PRIMARY KEY (cod))')
-        cursor.execute('CREATE TABLE IF NOT EXISTS MOVIMENTACAO (cod integer, nome text, codEpi integer, data text, horario text)')
-        cursor.execute('CREATE TABLE IF NOT EXISTS EPIS (nome text, idade integer, email text)')
+        cursor.execute('CREATE TABLE REGISTRO (cod integer, nome text, PRIMARY KEY (cod))')
+        cursor.execute('CREATE TABLE MOVIMENTACAO (cod integer, nome text, codEpi integer, data text, horario text)')
+        cursor.execute('CREATE TABLE EPIS (nome text, idade integer, email text)')
 
         #cursor.execute("INSERT INTO REGISTRO VALUES('Maria', 40, 'maria@gmail.com')")  
 
