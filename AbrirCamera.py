@@ -8,6 +8,8 @@ from PIL import Image, ImageTk #Precisa baixar
 import os
 import numpy as np #Precisa baixar provavelmente
 import face_recognition
+from datetime import date
+from datetime import datetime
 
 
 #Função tela info
@@ -40,9 +42,9 @@ def telaMov():
     webcam.place(x=5, y=10)
     codLabel = tk.Label(tela_mov, font=('Terminal', '15'), text='Código de funcionário:')
     codLabel.place(x=490, y=10)
-    cod = tk.Entry(tela_mov, width=10, font=('Terminal','15'))
-    cod.place(x=720, y=13)
-    listaEpis = ['8989 - Luvas', '8787 - Capacete', '9095 - Mascara']
+    codentry = tk.Entry(tela_mov, width=10, font=('Terminal','15'))
+    codentry.place(x=720, y=13)
+    listaEpis = ['8989-Luvas', '8787-Capacete', '9095-Mascara']
     #listaEpis.append('9090 - Fone') Adicionar 1
     #listaEpis.extend('9090 - Fone', '8765 - Creme') Adicionar mais de 1
 
@@ -63,8 +65,8 @@ def telaMov():
 
     codEpi4Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
     codEpi4Label.place(x=490, y=205)
-    epis1 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
-    epis1.place(x=635,y=205)
+    epis4 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
+    epis4.place(x=635,y=205)
 
     codEpi5Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
     codEpi5Label.place(x=490, y=255)
@@ -72,13 +74,50 @@ def telaMov():
     epis5.place(x=635,y=255)
 
     #Botoes
-    movimentarButton = tk.Button(tela_mov, text="Movimentar",state=DISABLED,font=('System','3'),height=2, width=15, border=10, activebackground='green')
+    movimentarButton = tk.Button(tela_mov, text="Movimentar",command=lambda:movimentar(codentry, epis1, epis2, epis3, epis4, epis5),state=DISABLED,font=('System','3'),height=2, width=15, border=10, activebackground='green')
     movimentarButton.place(x=750, y=300)
-    registrarButton = tk.Button(tela_mov, text="Verificar",command=lambda:verificar(cod),font=('System','3'),height=2, width=15, border=10, activebackground='green')
+    registrarButton = tk.Button(tela_mov, text="Verificar",command=lambda:verificar(codentry),font=('System','3'),height=2, width=15, border=10, activebackground='green')
     registrarButton.place(x=580, y=300)
     infoButton = tk.Button(tela_mov, text="?", command=lambda:telaInfo(0) ,height=1,font=('System'),border=5)
     infoButton.place(x=948, y=340)
     
+    #Função movimentar
+    def movimentar(cod, epi1cbox, epi2cbox, epi3cbox, epi4cbox, epi5cbox):
+        cod = cod.get()
+        datahora = datetime.now()
+        datahora = datahora.strftime("%d/%m/%Y %H:%M")
+        datahora = datahora.split()
+    
+        epi1 = epi1cbox.get()
+        epi1 = epi1.split('-')
+        epi2 = epi2cbox.get()
+        epi2 = epi2.split('-')
+        epi3 = epi3cbox.get()
+        epi3 = epi3.split('-')
+        epi4 = epi4cbox.get()
+        epi4 = epi4.split('-')
+        epi5 = epi5cbox.get()
+        epi5 = epi5.split('-')
+     
+        banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sqlite.db')
+        cursor = banco.cursor()
+        
+        if epi1[0] != '':
+            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi1[0], datahora[0], datahora[1]))
+        if epi2[0] != '':
+            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi2[0], datahora[0], datahora[1]))
+        if epi3[0] != '':
+            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi3[0], datahora[0], datahora[1]))    
+        if epi4[0] != '':
+            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi4[0], datahora[0], datahora[1]))
+        if epi5[0] != '':
+            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi5[0], datahora[0], datahora[1]))    
+
+        banco.commit()
+
+        messagebox.showinfo("Sucesso", "Movimentação realizada com sucesso")
+        tela_mov.destroy()
+        
     #Função verificar
     def verificar(cod):
         cod = cod.get()
@@ -92,20 +131,23 @@ def telaMov():
 
             faceAtual = face[65:350+65 ,95:450+95]
             faceActCod = face_recognition.face_encodings(faceAtual)
-
-            if len(faceRegCod) or len(faceActCod) > 0:
+        
+            if len(faceRegCod) and len(faceActCod) > 0:
                 faceRegCod = faceRegCod[0]
                 faceActCod = faceActCod[0]
 
-            result = face_recognition.compare_faces([faceRegCod], faceActCod, tolerance=0.5)
-            print(result)
+                result = face_recognition.compare_faces([faceRegCod], faceActCod, tolerance=0.5)
 
-            if(result[0]):
-                messagebox.showinfo("Sucesso", "Sua face foi verificada!")
-                movimentarButton.config(state=NORMAL)
+                if(result[0]):
+                    messagebox.showinfo("Sucesso", "Sua face foi verificada!")
+                    movimentarButton.config(state=NORMAL)
+                    codentry.config(state = DISABLED)
+                else:
+                    messagebox.showerror("Erro", "Sua face não foi verificada!")
+
             else:
-                messagebox.showerror("Erro", "Sua face não foi verificada!")
-
+                messagebox.showerror("Erro", "Sua face não foi encontrada!")    
+             
         else:
             messagebox.showerror("Erro", "Sua face não está cadastrada!")
         
@@ -239,11 +281,9 @@ if(os.path.exists('C:/EPIPY_CONTROL/FACES') == False):
         cursor = banco.cursor()
 
         cursor.execute('CREATE TABLE REGISTRO (cod integer, nome text, PRIMARY KEY (cod))')
-        cursor.execute('CREATE TABLE MOVIMENTACAO (cod integer, nome text, codEpi integer, data text, horario text)')
+        cursor.execute('CREATE TABLE MOVIMENTACAO (cod integer, codEpi integer, data text, horario text)')
         cursor.execute('CREATE TABLE EPIS (nome text, idade integer, email text)')
-
-        #cursor.execute("INSERT INTO REGISTRO VALUES('Maria', 40, 'maria@gmail.com')")  
-
+ 
         banco.commit()
 
 #Criar tela principal--------------------------------------------------------------------------------------------------------------------
