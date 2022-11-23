@@ -8,8 +8,47 @@ from PIL import Image, ImageTk #Precisa baixar
 import os
 import numpy as np #Precisa baixar provavelmente
 import face_recognition
-from datetime import date
 from datetime import datetime
+
+#FUNÇÕES DE TELA
+
+def telaRegEpi():
+    tela_regepi = tk.Toplevel(tela_principal)
+    screen_width = tela_regepi.winfo_screenwidth()
+    screen_width = (screen_width/2) - (520/2)
+    screen_height = tela_regepi.winfo_screenheight()
+    screen_height = (screen_height/2) - (245/2)  
+    tela_regepi.geometry('520x250+%d+%d' % (screen_width, screen_height)) #Tamanho
+    tela_regepi.title('Registrar EPI')
+    tela_regepi.resizable(0,0)
+
+    codEpi = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=15, font=('Terminal', '15'))
+    codEpi.place(x=152, y=65)
+    codEpiLabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Código do EPI:')
+    codEpiLabel.place(x=5, y=65)
+
+    codCA = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=15, font=('Terminal', '15'))
+    codCA.place(x=115, y=5)
+    codCALabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Código CA:')
+    codCALabel.place(x=5, y=5)
+
+    dateCADay = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=2, font=('Terminal', '15'))
+    dateCADay.place(x=165, y=35)
+    bar = tk.Label(tela_regepi, font=('Terminal', '17'), text='/')
+    bar.place(x=190, y=35)
+    dateCAMonth = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=2, font=('Terminal', '15'))
+    dateCAMonth.place(x=205, y=35)
+    bar = tk.Label(tela_regepi, font=('Terminal', '17'), text='/')
+    bar.place(x=230, y=35)
+    dateCAYear = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=4, font=('Terminal', '15'))
+    dateCAYear.place(x=245, y=35)
+    dateCALabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Validade do CA:')
+    dateCALabel.place(x=5, y=35)
+
+    desc = tk.Entry(tela_regepi,width=15, font=('Terminal', '15'))
+    desc.place(x=185, y=95)
+    codCALabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Descrição do EPI:')
+    codCALabel.place(x=5, y=95)
 
 
 #Função tela info
@@ -21,6 +60,7 @@ def telaInfo(tela):
     screen_height = (screen_height/2) - (245/2)  
     tela_info.geometry('520x250+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_info.title('Info')
+    tela_info.resizable(0,0)
     if(tela == 0): #Tela mov
         text = "Informações sobre a movimentação:\n1) Informe nos campos a cima o seu código individual, codigo dos EPIS que deseja e ao lado a quantidade desse mesmo EPI.\n2) Tente posicionar sua face no centro do retangulo da camera deixando toda sua cabeça fique visivel.\n3) Se possivel remova óculos e bonés ou qualquer outro acessório que tampe ou esconda sua face.\n4) Por fim, olhe para a camera e clique no botão registrar ou enter no teclado sem desviar o olhar.\n5) Uma tela de confirmação aparece oficializando a movimentação casa não haja erro."
     elif(tela == 1): #Tela reg
@@ -38,12 +78,15 @@ def telaMov():
     screen_height = (screen_height/2) - (380/2)  
     tela_mov.geometry('975x375+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_mov.title('Movimentação')
+    tela_mov.resizable(0,0)
     webcam = tk.Label(tela_mov, relief='solid', width=450, height=350)
     webcam.place(x=5, y=10)
+
     codLabel = tk.Label(tela_mov, font=('Terminal', '15'), text='Código de funcionário:')
     codLabel.place(x=490, y=10)
-    codentry = tk.Entry(tela_mov, width=10, font=('Terminal','15'))
+    codentry = tk.Entry(tela_mov,validate='key',validatecommand=(valNum, '%S'), width=10, font=('Terminal','15'))
     codentry.place(x=720, y=13)
+
     listaEpis = ['8989-Luvas', '8787-Capacete', '9095-Mascara']
     #listaEpis.append('9090 - Fone') Adicionar 1
     #listaEpis.extend('9090 - Fone', '8765 - Creme') Adicionar mais de 1
@@ -183,6 +226,7 @@ def telaSobre():
     contact.place(x=2, y=440)
     crew = tk.Label(tela_sobre,padx=10,relief='solid',wraplength='550',font=('Terminal', '15'),text='Equipe do EPIPY \n Murilo Vieira Pizzamiglio - Desenvolvedor e criador da ferramenta \n murilo@pizzamiglio.eti.br - https://github.com/MuriloViera \n Carlos Cezar Pizzamiglio - Colaborador e gerente da ferramenta \n carlos@pizzamiglio.eti.br')
     crew.place(x=2, y=468)
+    tela_sobre.resizable(0,0)
 
     tela_principal.wait_window(tela_sobre)
     if(tk.Toplevel.winfo_exists(tela_sobre) == 0):
@@ -194,33 +238,34 @@ def telaRegistro():
     tela_principal.withdraw()
     tela_registro = tk.Toplevel(tela_principal)
     screen_width = tela_registro.winfo_screenwidth()
-    screen_width = (screen_width/2) - (975/2)
+    screen_width = (screen_width/2) - (465/2)
     screen_height = tela_registro.winfo_screenheight()
-    screen_height = (screen_height/2) - (375/2)  
-    tela_registro.geometry('975x375+%d+%d' % (screen_width, screen_height)) #Tamanho
+    screen_height = (screen_height/2) - (550/2)  
+    tela_registro.geometry('465x550+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_registro.title('Registro')
+    tela_registro.resizable(0,0)
 
     #Webcam
     webcam = tk.Label(tela_registro, relief='solid', width=450, height=350)
     webcam.place(x=5, y=10)
 
     #Linha codigo
-    cod = tk.Entry(tela_registro, width=10, font=('Terminal', '15'))
-    cod.place(x=675, y=120)
+    cod = tk.Entry(tela_registro,validate='key',validatecommand=(valNum,6, '%S'),width=31, font=('Terminal', '15'))
+    cod.place(x=115, y=383)
     codLabel = tk.Label(tela_registro, font=('Terminal', '17'), text='Código:')
-    codLabel.place(x=600, y=117)
+    codLabel.place(x=35, y=380)
 
     #Linha nome
-    name = tk.Entry(tela_registro, width=33, font=('Terminal', '15'))
-    name.place(x=580,y=165)
+    name = tk.Entry(tela_registro, validate='key', validatecommand=(valCha, '%S'),width=33, font=('Terminal', '15'))
+    name.place(x=95,y=425)
     nameLabel = tk.Label(tela_registro, font=('Terminal', '17'), text='Nome:')
-    nameLabel.place(x=520, y=162.5)
+    nameLabel.place(x=35, y=422.5)
 
     #Botao
     registrarButton = tk.Button(tela_registro, text="Registrar",font=('System','3'), command=lambda: registrar(cod, camera, tela_registro, name) ,height=1, width=15, border=10, activebackground='green')
-    registrarButton.place(x=650, y=220)
+    registrarButton.place(x=160, y=470)
     infoButton = tk.Button(tela_registro, text="?", command=lambda:telaInfo(1) ,height=1,font=('System'),border=5)
-    infoButton.place(x=948, y=340)
+    infoButton.place(x=438, y=515)
     
     #Acessar a camera
     camera = cv.VideoCapture(0)
@@ -229,6 +274,9 @@ def telaRegistro():
     tela_principal.wait_window(tela_registro)
     if(tk.Toplevel.winfo_exists(tela_registro) == 0):
         tela_principal.deiconify()
+
+
+#FUNÇÕES VARIADAS
 
 #Função para pegar frames e colocar em um painel tk
 def pegarFrames(camera, webcam):
@@ -245,30 +293,37 @@ def registrar(cod,camera, tela_registro, name):
     cod = cod.get() #Aqui to recebendo o que tem no campo cod
     name = name.get() #Aqui to recebendo o que tem no campo name
 
-    if((cod.isdigit()) and (all(n.isalpha() for n in name.split(" ")))):
-        if(len(cod) <= 10):
-            ret, face = camera.read() #Aqui to pegando 1 frame no momento em que o cara clicar no register
+    if(len(cod) <= 10):
+        ret, face = camera.read() #Aqui to pegando 1 frame no momento em que o cara clicar no register
 
-            kernel = np.ones((2,2),np.uint8)
+        kernel = np.ones((2,2),np.uint8)
         
-            faceFinal = cv.medianBlur(face, 1)  
-            faceFinal = cv.morphologyEx(faceFinal,cv.MORPH_CLOSE, kernel, iterations=1)
-            faceFinal = faceFinal[65:350+65 ,95:450+95]
-            cv.imwrite('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' , faceFinal)
+        faceFinal = cv.medianBlur(face, 1)  
+        faceFinal = cv.morphologyEx(faceFinal,cv.MORPH_CLOSE, kernel, iterations=1)
+        faceFinal = faceFinal[65:350+65 ,95:450+95]
+        cv.imwrite('C:/EPIPY_CONTROL/FACES/Face_' + cod + '.jpg' , faceFinal)
 
-            banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sqlite.db')
-            cursor = banco.cursor()
-            cursor.execute("INSERT INTO REGISTRO (cod, nome) VALUES(?, ?)", (cod, name))
-            banco.commit()
+        banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sqlite.db')
+        cursor = banco.cursor()
+        cursor.execute("INSERT INTO REGISTRO (cod, nome) VALUES(?, ?)", (cod, name))
+        banco.commit()
 
-            messagebox.showinfo("Sucesso", "Seu registro foi efetuado com sucesso!")
-            tela_registro.destroy()
-        else:
-           messagebox.showerror("Erro", "Por favor, verifique o seu código e o escreva novamente certificando de que a quantidade de números esteja correta!")     
+        messagebox.showinfo("Sucesso", "Seu registro foi efetuado com sucesso!")
+        tela_registro.destroy()
     else:
-        messagebox.showerror("Erro", "Por favor, verifique o seu código ou nome e os escreva novamente certificando de que existem apenas elementos numéricos no campo código e apenas letras no campo nome!")
+        messagebox.showerror("Erro", "Por favor, verifique o seu código e o escreva novamente certificando de que a quantidade de números esteja correta!")     
 
-#Criação das pastas-------------------------------------------------------------------------------------------------------------------
+#Função para validar digitos
+def numeros(char):
+    return char.isdigit()
+    
+#Função para validar letras
+def letras(char):
+    return all(chr.isalpha() or chr.isspace() for chr in char)   
+
+#INICIO DO CODIGO RAIZ DO PROGRAMA
+
+#Criação das pastas
 if(os.path.exists('C:/EPIPY_CONTROL/FACES') == False):
     os.makedirs('C:/EPIPY_CONTROL/FACES')
 
@@ -286,7 +341,7 @@ if(os.path.exists('C:/EPIPY_CONTROL/FACES') == False):
  
         banco.commit()
 
-#Criar tela principal--------------------------------------------------------------------------------------------------------------------
+#Criar tela principal
 tela_principal = tk.Tk(className='Epipy')
 screen_width = tela_principal.winfo_screenwidth()
 screen_width = (screen_width/2) - (500/2)
@@ -299,6 +354,7 @@ screen_height = (screen_height/2) - (500/2)
 
 tela_principal.geometry('500x500+%d+%d' % (screen_width, screen_height)) #Tamanho
 titulo=tk.Label(tela_principal, text='Controle de Entrega de EPI', font=('Terminal', '16', 'bold italic'))
+
 loginButton = tk.Button(tela_principal,font=('System','3'), text="Movimento", command=lambda:telaMov(), height=1, width=20, border=10)
 registerButton = tk.Button(tela_principal,font=('System','3') ,text="Registro", command=lambda:telaRegistro(), height=1, width=20, border=10)
 sobreButton = tk.Button(tela_principal, font=('System','3'),text="Sobre", command=lambda:telaSobre(),height=1, width=5, border=5)
@@ -308,6 +364,11 @@ sobreButton.place(x=440, y=462)
 titulo.place(x=115, y=100)
 version=tk.Label(tela_principal, text='Versão 1.0.0', font=('Terminal', '10', 'bold italic'))
 version.place(x=5, y=480)
-epiButton = tk.Button(tela_principal,font=('System','3') ,text="Cadastrar EPI", height=1, width=20, border=10)
+epiButton = tk.Button(tela_principal,font=('System','3') ,command=lambda:telaRegEpi(),text="Cadastrar EPI", height=1, width=20, border=10)
 epiButton.place(x=165, y=300)
-tela_principal.mainloop() #Quero que ela fique rodando
+tela_principal.resizable(0,0)
+
+valNum = tela_principal.register(numeros) 
+valCha = tela_principal.register(letras) 
+
+tela_principal.mainloop() 
