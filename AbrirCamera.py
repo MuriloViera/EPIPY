@@ -250,7 +250,7 @@ def telaRegistro():
     webcam.place(x=5, y=10)
 
     #Linha codigo
-    cod = tk.Entry(tela_registro,validate='key',validatecommand=(valNum,6, '%S'),width=31, font=('Terminal', '15'))
+    cod = tk.Entry(tela_registro,validate='key',validatecommand=(valNum, '%S'),width=31, font=('Terminal', '15'))
     cod.place(x=115, y=383)
     codLabel = tk.Label(tela_registro, font=('Terminal', '17'), text='Código:')
     codLabel.place(x=35, y=380)
