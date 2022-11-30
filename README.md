@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/79518797/204881975-05c356b8-b684-4310-9ebd-16227bc8ed11.png"/>
+</p>
+
+
 <h1 align='center'>EPIPY</h1>
 
 <p align="center">
