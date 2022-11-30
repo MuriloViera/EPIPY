@@ -1,5 +1,21 @@
-# EPIPY
-Esta ferramenta trata-se de uma aplicação python desenvolvida utilizando a biblioteca face-recognition e opencv, e serve para controlar por meio de reconhecimento facial a entrada e saida de EPIS de uma industria/usina. O funcionamento é bem simples:
-> Caso o usuário seja novo registrar o mesmo no banco local clicando no botão "registrar" e adicionando seu nome ou codigo, dependendo do critério do local
+<h1 align='center'>EPIPY</h1>
+
+<p align="center">
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/> <img src="https://img.shields.io/badge/Git-E34F26?style=for-the-badge&logo=git&logoColor=white"/> <img src="https://img.shields.io/badge/-OpenCV-%235C3EE8?style=for-the-badge&logo=opencv&logoColor=white"/> <img src="https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white"/>
+</p>
+
+# Visão geral
+> Esta ferramenta trata-se de uma aplicação python para controlar por meio de reconhecimento facial a entrada e saida de EPIS de uma industria/usina. Isso funciona utilizando a biblioteza Facerecognition e Opencv e SQLite3 para guardar as imagens em forma de banco de dados.
+
+# Informações
+>Esta aplicação salva os usuários, epis e movimentação em tabelas SQL no arquivo .db criado pelo mesmo, e as fotos em uma pasta no mesmo diretório criado. Em seu princípio a ferramenta possui 3 telas:
+>>Registro:
+>>Nesta tela o usuário insere seu nome e codigo, e retira sua foto que será sua face principal de seu cadastro, aquela usada para comparações faciais futuras.
 >
-> Ao retirar um EPI, o funcionário/usuário deve clicar no botão de Login, inserir o nome/codigo com que se cadastrou e em seguida passar sua face para o reconhecimento, caso o login seja validado com a face, em um arquivo .csv será gravado o nome, data e hora em que o EPI foi retirado e qual foi.
+>>Movimento:
+>>Aqui o usuário necessita-se de tirar uma foto atual, e ser verificado baseado na sua face original de cadastro, caso a verificação facial seja validada, ele podera retirar os EPIS que necessita.
+>
+>>Cadastro EPI:
+>>Nesta tela cadastra-se os EPIS que estão disponíveis para os funcinários retirarem.
+>
+
