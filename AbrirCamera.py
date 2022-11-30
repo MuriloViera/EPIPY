@@ -349,8 +349,8 @@ screen_height = tela_principal.winfo_screenheight()
 screen_height = (screen_height/2) - (500/2)  
 
 #Vai caraio
-#icone = PhotoImage(file='icon.png')
-#tela_principal.iconphoto(True,icone)
+icone = PhotoImage(file='icon.png')
+tela_principal.iconphoto(True,icone)
 
 tela_principal.geometry('500x500+%d+%d' % (screen_width, screen_height)) #Tamanho
 titulo=tk.Label(tela_principal, text='Controle de Entrega de EPI', font=('Terminal', '16', 'bold italic'))
