@@ -119,8 +119,8 @@ def telaMov():
     #Botoes
     movimentarButton = tk.Button(tela_mov, text="Movimentar",command=lambda:movimentar(codentry, epis1, epis2, epis3, epis4, epis5),state=DISABLED,font=('System','3'),height=2, width=15, border=10, activebackground='green')
     movimentarButton.place(x=750, y=300)
-    registrarButton = tk.Button(tela_mov, text="Verificar",command=lambda:verificar(codentry),font=('System','3'),height=2, width=15, border=10, activebackground='green')
-    registrarButton.place(x=580, y=300)
+    verificarButton = tk.Button(tela_mov, text="Verificar",command=lambda:verificar(codentry),font=('System','3'),height=2, width=15, border=10, activebackground='green')
+    verificarButton.place(x=580, y=300)
     infoButton = tk.Button(tela_mov, text="?", command=lambda:telaInfo(0) ,height=1,font=('System'),border=5)
     infoButton.place(x=948, y=340)
     
@@ -185,6 +185,7 @@ def telaMov():
                     messagebox.showinfo("Sucesso", "Sua face foi verificada!")
                     movimentarButton.config(state=NORMAL)
                     codentry.config(state = DISABLED)
+                    verificarButton.config(state=DISABLED)
                 else:
                     messagebox.showerror("Erro", "Sua face não foi verificada!")
 
