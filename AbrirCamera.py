@@ -15,40 +15,58 @@ from datetime import datetime
 def telaRegEpi():
     tela_regepi = tk.Toplevel(tela_principal)
     screen_width = tela_regepi.winfo_screenwidth()
-    screen_width = (screen_width/2) - (520/2)
+    screen_width = (screen_width/2) - (500/2)
     screen_height = tela_regepi.winfo_screenheight()
-    screen_height = (screen_height/2) - (245/2)  
-    tela_regepi.geometry('520x250+%d+%d' % (screen_width, screen_height)) #Tamanho
+    screen_height = (screen_height/2) - (120/2)  
+    tela_regepi.geometry('500x120+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_regepi.title('Registrar EPI')
     tela_regepi.resizable(0,0)
+    tela_regepi.configure(bg='gray90')
 
-    codEpi = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=15, font=('Terminal', '15'))
-    codEpi.place(x=152, y=65)
-    codEpiLabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Código do EPI:')
-    codEpiLabel.place(x=5, y=65)
-
-    codCA = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=15, font=('Terminal', '15'))
+    codCA = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=17, font=('Terminal', '15'))
     codCA.place(x=115, y=5)
-    codCALabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Código CA:')
+    codCALabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Código CA:', bg='gray90')
     codCALabel.place(x=5, y=5)
-
+   
     dateCADay = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=2, font=('Terminal', '15'))
-    dateCADay.place(x=165, y=35)
-    bar = tk.Label(tela_regepi, font=('Terminal', '17'), text='/')
-    bar.place(x=190, y=35)
+    dateCADay.place(x=165, y=40)
+    bar = tk.Label(tela_regepi, font=('Terminal', '17'), text='/', bg='gray90')
+    bar.place(x=190, y=40)
     dateCAMonth = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=2, font=('Terminal', '15'))
-    dateCAMonth.place(x=205, y=35)
-    bar = tk.Label(tela_regepi, font=('Terminal', '17'), text='/')
-    bar.place(x=230, y=35)
+    dateCAMonth.place(x=205, y=40)
+    bar = tk.Label(tela_regepi, font=('Terminal', '17'), text='/', bg='gray90')
+    bar.place(x=230, y=40)
     dateCAYear = tk.Entry(tela_regepi,validate='key',validatecommand=(valNum, '%S'),width=4, font=('Terminal', '15'))
-    dateCAYear.place(x=245, y=35)
-    dateCALabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Validade do CA:')
-    dateCALabel.place(x=5, y=35)
+    dateCAYear.place(x=245, y=40)
+    dateCALabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Validade do CA:', bg='gray90')
+    dateCALabel.place(x=5, y=40)
 
-    desc = tk.Entry(tela_regepi,width=15, font=('Terminal', '15'))
-    desc.place(x=185, y=95)
-    codCALabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Descrição do EPI:')
-    codCALabel.place(x=5, y=95)
+    desc = tk.Entry(tela_regepi,width=30, font=('Terminal', '15'))
+    desc.place(x=185, y=75)
+    codCALabel = tk.Label(tela_regepi, font=('Terminal', '17'), text='Descrição do EPI:', bg='gray90')
+    codCALabel.place(x=5, y=75)
+
+    addButton = tk.Button(tela_regepi, text="Adicionar",command=lambda:regEpi(codCA, dateCADay, dateCAMonth, dateCAYear, desc),font=('System','3'), height=1, width=10, border=10, activebackground='green')
+    addButton.place(x=350, y=15)
+
+    def regEpi(codCA, dateCADay, dateCAMonth, dateCAYear, desc):
+        codCA = codCA.get()
+        desc = desc.get()
+        dateCADay = dateCADay.get()
+        dateCAMonth = dateCAMonth.get()
+        dateCAYear = dateCAYear.get()
+        
+        dateCA = dateCADay + '/' + dateCAMonth + '/' + dateCAYear
+
+        banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sqlite.db')
+        cursor = banco.cursor()
+
+        cursor.execute("INSERT INTO EPIS (codCa, valCa, desc) VALUES(?, ?, ?)", (codCA, dateCA, desc))
+        banco.commit()
+
+        messagebox.showinfo("Sucesso", "O EPI foi cadastrado com sucesso!")
+        tela_regepi.destroy()
+
 
 
 #Função tela info
@@ -61,11 +79,12 @@ def telaInfo(tela):
     tela_info.geometry('520x250+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_info.title('Info')
     tela_info.resizable(0,0)
+    tela_info.configure(bg='gray90')
     if(tela == 0): #Tela mov
         text = "Informações sobre a movimentação:\n1) Informe nos campos a cima o seu código individual, codigo dos EPIS que deseja e ao lado a quantidade desse mesmo EPI.\n2) Tente posicionar sua face no centro do retangulo da camera deixando toda sua cabeça fique visivel.\n3) Se possivel remova óculos e bonés ou qualquer outro acessório que tampe ou esconda sua face.\n4) Por fim, olhe para a camera e clique no botão registrar ou enter no teclado sem desviar o olhar.\n5) Uma tela de confirmação aparece oficializando a movimentação casa não haja erro."
     elif(tela == 1): #Tela reg
         text = "Informações sobre o registro: \n1) Informe no campo a baixo o seu código individual.\n2) Tente posicionar sua face no centro do retangulo da camera de forma com que toda sua cabeça fique visivel.\n3) Se possivel remova óculos e bonés ou qualquer outro acessório que tampe ou esconda sua face.\n4) Por fim, olhe para a camera e clique no botão registrar ou enter no teclado sem desviar o olhar.\n5) Uma tela de confirmação aparecerá caso a operação de registro seja sucedida sem erros."
-    informations = tk.Label(tela_info,justify=tk.LEFT,bd=2,wraplength='500',relief='solid',font=('Terminal', '16'),text=text)
+    informations = tk.Label(tela_info,justify=tk.LEFT,bd=2,wraplength='500',relief='solid',font=('Terminal', '16'),text=text, bg='gray90')
     informations.place(x=5, y=5)
 
 #Função tela movimentação
@@ -79,39 +98,45 @@ def telaMov():
     tela_mov.geometry('975x375+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_mov.title('Movimentação')
     tela_mov.resizable(0,0)
+    tela_mov.configure(bg='gray90')
     webcam = tk.Label(tela_mov, relief='solid', width=450, height=350)
     webcam.place(x=5, y=10)
 
-    codLabel = tk.Label(tela_mov, font=('Terminal', '15'), text='Código de funcionário:')
+    codLabel = tk.Label(tela_mov, font=('Terminal', '15'), text='Código de funcionário:', bg='gray90')
     codLabel.place(x=490, y=10)
     codentry = tk.Entry(tela_mov,validate='key',validatecommand=(valNum, '%S'), width=10, font=('Terminal','15'))
     codentry.place(x=720, y=13)
 
-    listaEpis = ['8989-Luvas', '8787-Capacete', '9095-Mascara']
-    #listaEpis.append('9090 - Fone') Adicionar 1
-    #listaEpis.extend('9090 - Fone', '8765 - Creme') Adicionar mais de 1
+    banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sqlite.db')
+    cursor = banco.cursor()
+    cursor.execute('SELECT codCA, desc FROM EPIS')
+    lista = cursor.fetchall()
+    listaEpis=[]
 
-    codEpi1Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
+    for item in lista:
+        listaEpis.append(str(item[0]) + '-' + item[1])
+        
+    codEpi1Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:', bg='gray90')
     codEpi1Label.place(x=490, y=55)
     epis1 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
     epis1.place(x=635,y=55)
 
-    codEpi2Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
+    codEpi2Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:', bg='gray90')
     codEpi2Label.place(x=490, y=105)
     epis2 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
     epis2.place(x=635,y=105)
 
-    codEpi3Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
+    codEpi3Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:', bg='gray90')
     codEpi3Label.place(x=490, y=155)
     epis3 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
     epis3.place(x=635,y=155)
 
-    codEpi4Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
+    codEpi4Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:', bg='gray90')
     codEpi4Label.place(x=490, y=205)
     epis4 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
     epis4.place(x=635,y=205)
 
-    codEpi5Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:')
+    codEpi5Label = tk.Label(tela_mov, font=('Terminal', '15'), text='Código do EPI:', bg='gray90')
     codEpi5Label.place(x=490, y=255)
     epis5 = tkk.Combobox(tela_mov, values=listaEpis, font=('Terminal', '15'), width=30)
     epis5.place(x=635,y=255)
@@ -146,15 +171,15 @@ def telaMov():
         cursor = banco.cursor()
         
         if epi1[0] != '':
-            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi1[0], datahora[0], datahora[1]))
+            cursor.execute("INSERT INTO MOVIMENTACAO (codUser, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi1[0], datahora[0], datahora[1]))
         if epi2[0] != '':
-            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi2[0], datahora[0], datahora[1]))
+            cursor.execute("INSERT INTO MOVIMENTACAO (codUser, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi2[0], datahora[0], datahora[1]))
         if epi3[0] != '':
-            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi3[0], datahora[0], datahora[1]))    
+            cursor.execute("INSERT INTO MOVIMENTACAO (codUser, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi3[0], datahora[0], datahora[1]))    
         if epi4[0] != '':
-            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi4[0], datahora[0], datahora[1]))
+            cursor.execute("INSERT INTO MOVIMENTACAO (codUser, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi4[0], datahora[0], datahora[1]))
         if epi5[0] != '':
-            cursor.execute("INSERT INTO MOVIMENTACAO (cod, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi5[0], datahora[0], datahora[1]))    
+            cursor.execute("INSERT INTO MOVIMENTACAO (codUser, codEpi, data, horario) VALUES(?, ?, ?, ?)", (cod, epi5[0], datahora[0], datahora[1]))    
 
         banco.commit()
 
@@ -196,7 +221,7 @@ def telaMov():
             messagebox.showerror("Erro", "Sua face não está cadastrada!")
         
     #Acessar a camera
-    camera = cv.VideoCapture(0)
+    camera = cv.VideoCapture(1) #Aqui tem que ficar 0
     pegarFrames(camera,webcam)#Capturar os frames com a webcam
 
     tela_principal.wait_window(tela_mov)
@@ -213,19 +238,20 @@ def telaSobre():
     screen_height = (screen_height/2) - (660/2)  
     tela_sobre.geometry('550x620+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_sobre.title('Sobre')
+    tela_sobre.configure(bg='gray90')
     info = tk.Label(tela_sobre,relief='solid',wraplength='550',font=('Terminal', '15'),text='Esse software foi desenvolvido para monitorar a saida de EPIs utilizando a tecnologia de reconhecimento' + 
     'facial, o mesmo funciona utilizando armazenamento local em sua versão atual. Seu funcionamento é simples, caso o usuário ainda' + 
     'não seja cadastrado basta clicar no botão REGISTRAR na tela principal e lá seguir as regras, após isso, caso o usuário deseje' + 
     'retirar um EPI, o mesmo necessita de fazer uma verificação clicando no botão MOVIMENTACAO e seguindo as informações de lá.' +
     'Todas essas informações são armazenadas em um diretório no disco raiz C:/ chamado de EPIPY_CONTROL, dentro dele existe, 3 ' + 
     'pastas uma com as faces registradas de cada usuário, uma com um arquivo csv de uma tabela com o nome o codigo de cada usuário' + 
-    'cadastrado e a outra com um arquivo da mesma espécie que possui o dia, a hora, o nome/codigo e o tipo de epi retirado.')
+    'cadastrado e a outra com um arquivo da mesma espécie que possui o dia, a hora, o nome/codigo e o tipo de epi retirado.', bg='gray90')
     info.place(x=2, y=2)
     credit = tk.Label(tela_sobre,relief='solid',wraplength='550',font=('Terminal', '15'),text='Agradecimentos sinceros a Adam Geitgey por ter disponibilizado essa excelente biblioteca de reconhecimento facil que está disponível em: https://github.com/ageitgey/face_recognition, sem sua biblioteca o desenvolvimento desse software teria sido muito mais custosa e dolorosa')
     credit.place(x=2, y=320)
-    contact = tk.Label(tela_sobre,padx=61,relief='solid',wraplength='550',font=('Terminal', '15'),text='Email para contato: contatoepipy@gmail.com')
+    contact = tk.Label(tela_sobre,padx=61,relief='solid',wraplength='550',font=('Terminal', '15'),text='Email para contato: contatoepipy@gmail.com', bg='gray90')
     contact.place(x=2, y=440)
-    crew = tk.Label(tela_sobre,padx=10,relief='solid',wraplength='550',font=('Terminal', '15'),text='Equipe do EPIPY \n Murilo Vieira Pizzamiglio - Desenvolvedor e criador da ferramenta \n murilo@pizzamiglio.eti.br - https://github.com/MuriloViera \n Carlos Cezar Pizzamiglio - Colaborador e gerente da ferramenta \n carlos@pizzamiglio.eti.br')
+    crew = tk.Label(tela_sobre,padx=10,relief='solid',wraplength='550',font=('Terminal', '15'),text='Equipe do EPIPY \n Murilo Vieira Pizzamiglio - Desenvolvedor e criador da ferramenta \n murilo@pizzamiglio.eti.br - https://github.com/MuriloViera \n Carlos Cezar Pizzamiglio - Colaborador e gerente da ferramenta \n carlos@pizzamiglio.eti.br', bg='gray90')
     crew.place(x=2, y=468)
     tela_sobre.resizable(0,0)
 
@@ -245,6 +271,7 @@ def telaRegistro():
     tela_registro.geometry('465x550+%d+%d' % (screen_width, screen_height)) #Tamanho
     tela_registro.title('Registro')
     tela_registro.resizable(0,0)
+    tela_registro.configure(bg='gray90')
 
     #Webcam
     webcam = tk.Label(tela_registro, relief='solid', width=450, height=350)
@@ -253,13 +280,13 @@ def telaRegistro():
     #Linha codigo
     cod = tk.Entry(tela_registro,validate='key',validatecommand=(valNum, '%S'),width=31, font=('Terminal', '15'))
     cod.place(x=115, y=383)
-    codLabel = tk.Label(tela_registro, font=('Terminal', '17'), text='Código:')
+    codLabel = tk.Label(tela_registro, font=('Terminal', '17'), text='Código:', bg='gray90')
     codLabel.place(x=35, y=380)
 
     #Linha nome
     name = tk.Entry(tela_registro, validate='key', validatecommand=(valCha, '%S'),width=33, font=('Terminal', '15'))
     name.place(x=95,y=425)
-    nameLabel = tk.Label(tela_registro, font=('Terminal', '17'), text='Nome:')
+    nameLabel = tk.Label(tela_registro, font=('Terminal', '17'), text='Nome:', bg='gray90')
     nameLabel.place(x=35, y=422.5)
 
     #Botao
@@ -269,7 +296,7 @@ def telaRegistro():
     infoButton.place(x=438, y=515)
     
     #Acessar a camera
-    camera = cv.VideoCapture(0)
+    camera = cv.VideoCapture(1) #Aqui tem que ser 0
     pegarFrames(camera,webcam)#Capturar os frames com a webcam
 
     tela_principal.wait_window(tela_registro)
@@ -306,7 +333,7 @@ def registrar(cod,camera, tela_registro, name):
 
         banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sqlite.db')
         cursor = banco.cursor()
-        cursor.execute("INSERT INTO REGISTRO (cod, nome) VALUES(?, ?)", (cod, name))
+        cursor.execute("INSERT INTO REGISTRO (codUser, nome) VALUES(?, ?)", (cod, name))
         banco.commit()
 
         messagebox.showinfo("Sucesso", "Seu registro foi efetuado com sucesso!")
@@ -336,10 +363,12 @@ if(os.path.exists('C:/EPIPY_CONTROL/FACES') == False):
 
         cursor = banco.cursor()
 
-        cursor.execute('CREATE TABLE REGISTRO (cod integer, nome text, PRIMARY KEY (cod))')
-        cursor.execute('CREATE TABLE MOVIMENTACAO (cod integer, codEpi integer, data text, horario text)')
-        cursor.execute('CREATE TABLE EPIS (nome text, idade integer, email text)')
- 
+        cursor.execute('CREATE TABLE REGISTRO (codUser integer, nome text, PRIMARY KEY (codUser))')
+        cursor.execute('CREATE TABLE MOVIMENTACAO (cod integer, codUser integer, codEpi integer, data text, horario text, PRIMARY KEY (cod))')
+        cursor.execute('CREATE TABLE EPIS (codEpi integer, codCa integer, valCa text, desc text, PRIMARY KEY (codEpi))')
+        cursor.execute('UPDATE MOVIMENTACAO SET cod=rowid')
+        cursor.execute('UPDATE EPIS SET codEpi=rowid')
+        
         banco.commit()
 
 #Criar tela principal
@@ -353,20 +382,26 @@ screen_height = (screen_height/2) - (500/2)
 icone = PhotoImage(file='icon.png')
 tela_principal.iconphoto(True,icone)
 
-tela_principal.geometry('500x500+%d+%d' % (screen_width, screen_height)) #Tamanho
-titulo=tk.Label(tela_principal, text='Controle de Entrega de EPI', font=('Terminal', '16', 'bold italic'))
 
-loginButton = tk.Button(tela_principal,font=('System','3'), text="Movimento", command=lambda:telaMov(), height=1, width=20, border=10)
-registerButton = tk.Button(tela_principal,font=('System','3') ,text="Registro", command=lambda:telaRegistro(), height=1, width=20, border=10)
-sobreButton = tk.Button(tela_principal, font=('System','3'),text="Sobre", command=lambda:telaSobre(),height=1, width=5, border=5)
-loginButton.place(x=165, y=200)
-registerButton.place(x=165, y=250)
-sobreButton.place(x=440, y=462)
-titulo.place(x=115, y=100)
+tela_principal.geometry('500x500+%d+%d' % (screen_width, screen_height)) #Tamanho
+titulo=tk.Label(tela_principal, text='Controle de Entrega de EPI', font=('Terminal', '20', 'bold italic'), bg='gray90', wraplength='400')
+tela_principal.configure(bg='gray90')
+logo = tk.Label(tela_principal, image=icone, bg='gray90')
 version=tk.Label(tela_principal, text='Versão 1.0.0', font=('Terminal', '10', 'bold italic'))
-version.place(x=5, y=480)
+
+movimentButton = tk.Button(tela_principal,font=('System','3'), text="Movimento", command=lambda:telaMov(), height=1, width=20, border=10)
+registerButton = tk.Button(tela_principal,font=('System','3') ,text="Registro", command=lambda:telaRegistro(), height=1, width=20, border=10)
 epiButton = tk.Button(tela_principal,font=('System','3') ,command=lambda:telaRegEpi(),text="Cadastrar EPI", height=1, width=20, border=10)
-epiButton.place(x=165, y=300)
+sobreButton = tk.Button(tela_principal, font=('System','3'),text="Sobre", command=lambda:telaSobre(),height=1, width=5, border=5)
+
+movimentButton.place(x=165, y=300)
+registerButton.place(x=165, y=350)
+epiButton.place(x=165, y=400)
+sobreButton.place(x=440, y=462)
+titulo.place(x=80, y=220)
+logo.place(x=155, y=0)
+version.place(x=5, y=480)
+
 tela_principal.resizable(0,0)
 
 valNum = tela_principal.register(numeros) 
