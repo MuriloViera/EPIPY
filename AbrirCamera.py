@@ -13,6 +13,7 @@ from datetime import datetime
 #FUNÇÕES DE TELA
 
 def telaRegEpi():
+    tela_principal.withdraw()
     tela_regepi = tk.Toplevel(tela_principal)
     screen_width = tela_regepi.winfo_screenwidth()
     screen_width = (screen_width/2) - (500/2)
@@ -67,6 +68,9 @@ def telaRegEpi():
         messagebox.showinfo("Sucesso", "O EPI foi cadastrado com sucesso!")
         tela_regepi.destroy()
 
+    tela_principal.wait_window(tela_regepi)
+    if(tk.Toplevel.winfo_exists(tela_regepi) == 0):
+        tela_principal.deiconify()
 
 
 #Função tela info
@@ -221,7 +225,7 @@ def telaMov():
             messagebox.showerror("Erro", "Sua face não está cadastrada!")
         
     #Acessar a camera
-    camera = cv.VideoCapture(1) #Aqui tem que ficar 0
+    camera = cv.VideoCapture(0) 
     pegarFrames(camera,webcam)#Capturar os frames com a webcam
 
     tela_principal.wait_window(tela_mov)
@@ -296,7 +300,7 @@ def telaRegistro():
     infoButton.place(x=438, y=515)
     
     #Acessar a camera
-    camera = cv.VideoCapture(1) #Aqui tem que ser 0
+    camera = cv.VideoCapture(0) 
     pegarFrames(camera,webcam)#Capturar os frames com a webcam
 
     tela_principal.wait_window(tela_registro)
