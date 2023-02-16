@@ -11,7 +11,127 @@ import face_recognition
 from datetime import datetime
 
 #FUNÇÕES DE TELA
+#Função tela visualizar
 
+def telaVisualizar():
+    tela_principal.withdraw()
+    tela_vs = tk.Toplevel(tela_principal)
+    screen_width = tela_vs.winfo_screenwidth()
+    screen_width = (screen_width/2) - (750/2)
+    screen_height = tela_vs.winfo_screenheight()
+    screen_height = (screen_height/2) - (550/2)  
+    tela_vs.geometry('750x550+%d+%d' % (screen_width, screen_height)) #Tamanho
+    tela_vs.title('Visualizar')
+    tela_vs.resizable(0,0)
+    tela_vs.configure(bg='gray90')
+
+    registroButton = tk.Button(tela_vs,font=('System','3'), text="Tabela de Registro",command=lambda:mostrarTabela(0),height=2, width=12, border=10, wraplength=70)
+    movimentoButton = tk.Button(tela_vs,font=('System','3') ,text="Tabela de Movimentação", command=lambda:mostrarTabela(1),height=2, width=12, border=10, wraplength=100)
+    cEpiButton = tk.Button(tela_vs,font=('System','3') ,text="Tabela de EPIS", command=lambda:mostrarTabela(3),height=2, width=12, border=10, wraplength=70)
+
+    registroButton.place(x=10, y=10)
+    movimentoButton.place(x=10, y=80)
+    cEpiButton.place(x=10,y=150)
+
+    separator = tkk.Separator(tela_vs, orient='vertical')
+    separator.place(x=150, y=10, width=1, height=530)
+
+    frame = Frame(tela_vs)
+    frame.place(x=270, y=10)
+    yScrolltb = Scrollbar(frame)
+    yScrolltb.pack(side=RIGHT, fill=Y)
+
+    banco = sqlite3.connect('C:/EPIPY_CONTROL/REGISTRO/banco_Sqlite.db')
+    cursor = banco.cursor()
+
+    #Configurações tabela Registro
+    tabelaR = tkk.Treeview(frame, selectmode='browse', yscrollcommand=yScrolltb.set, height=25)
+    tabelaR.pack()
+    yScrolltb.configure(command=tabelaR.yview)
+    
+    tabelaR['columns'] = ('cdUsuario', 'name')
+    tabelaR.column('#0', width=0, stretch=NO)
+    tabelaR.column('cdUsuario', anchor=CENTER, width=80)
+    tabelaR.column('name', anchor=CENTER, width=280)
+    tabelaR.heading('#0', text='', anchor=CENTER)
+    tabelaR.heading('cdUsuario', text='Cód Usuário', anchor=CENTER)
+    tabelaR.heading('name', text='Nome', anchor=CENTER)
+    cursor.execute('SELECT codUser, nome FROM REGISTRO')
+    registros = cursor.fetchall()
+    for registro in registros:
+        tabelaR.insert(parent='', index='end', values=(registro[0], registro[1]))
+    
+    #Configurações tabela Movimentação
+    tabelaM = tkk.Treeview(frame, selectmode='browse', yscrollcommand=yScrolltb.set, height=25)
+    tabelaM.pack()
+   
+    tabelaM['columns'] = ('cdUsuario', 'cdEpi', 'data', 'hr')
+    tabelaM.column('#0', width=0, stretch=NO)
+    tabelaM.column('cdUsuario', anchor=CENTER, width=80)
+    tabelaM.column('cdEpi', anchor=CENTER, width=80)
+    tabelaM.column('data', anchor=CENTER, width=80)
+    tabelaM.column('hr', anchor=CENTER, width=80)
+    tabelaM.heading('#0', text='', anchor=CENTER)
+    tabelaM.heading('cdUsuario', text='Cód Usuário', anchor=CENTER)
+    tabelaM.heading('cdEpi', text='Cód Epi', anchor=CENTER)
+    tabelaM.heading('data', text='Data', anchor=CENTER)
+    tabelaM.heading('hr', text='Hora', anchor=CENTER)
+    cursor.execute('SELECT codUser, codEpi, data, horario FROM MOVIMENTACAO')
+    movimentos = cursor.fetchall()
+    for movimento in movimentos:
+        tabelaM.insert(parent='', index='end', values=(movimento[0], movimento[1], movimento[2], movimento[3]))    
+    
+    tabelaM.pack_forget()
+    
+    #Configuraões tabela Epi
+    tabelaE = tkk.Treeview(frame, selectmode='browse', yscrollcommand=yScrolltb.set, height=25)
+    tabelaE.pack()
+
+    tabelaE['columns'] = ('cdEpi', 'cdCa', 'valCa', 'desc')
+    tabelaE.column('#0', width=0, stretch=NO)
+    tabelaE.column('cdEpi', anchor=CENTER, width=80)
+    tabelaE.column('cdCa', anchor=CENTER, width=80)
+    tabelaE.column('valCa', anchor=CENTER, width=100)
+    tabelaE.column('desc', anchor=CENTER, width=250)
+    tabelaE.heading('#0', text='', anchor=CENTER)
+    tabelaE.heading('cdEpi', text='Cód Epi', anchor=CENTER)
+    tabelaE.heading('cdCa', text='Cód CA', anchor=CENTER)
+    tabelaE.heading('valCa', text='Data de Validade do CA', anchor=CENTER)
+    tabelaE.heading('desc', text='Descrição', anchor=CENTER)
+    cursor.execute('SELECT codEpi, codCa, valCa, desc FROM EPIS')
+    epis = cursor.fetchall()
+    for epi in epis:
+       tabelaE.insert(parent='', index='end', values=(epi[0], epi[1], epi[2], epi[3]))
+    
+    tabelaE.pack_forget()
+   
+    def mostrarTabela(tb):
+        if(tb == 0):#Tabela Registro
+            tabelaM.pack_forget()
+            tabelaE.pack_forget()
+            tabelaR.pack()
+            yScrolltb.configure(command=tabelaR.yview)
+            frame.place(x=270, y=10)
+
+        elif(tb == 1):
+            tabelaR.pack_forget()
+            tabelaE.pack_forget()
+            tabelaM.pack()
+            yScrolltb.configure(command=tabelaM.yview)
+            frame.place(x=280, y=10)
+
+        else:
+            tabelaR.pack_forget()
+            tabelaM.pack_forget()
+            tabelaE.pack()
+            yScrolltb.configure(command=tabelaE.yview)
+            frame.place(x=190, y=10)
+
+    tela_principal.wait_window(tela_vs)
+    if(tk.Toplevel.winfo_exists(tela_vs) == 0):
+        tela_principal.deiconify()
+
+#Função tela registrar EPI
 def telaRegEpi():
     tela_principal.withdraw()
     tela_regepi = tk.Toplevel(tela_principal)
@@ -264,7 +384,7 @@ def telaSobre():
         tela_principal.deiconify()
 
 #Função tela registro
-def telaRegistro():
+def telaRegistro(): #REALIZAR TRATAMENTO DE ERROS CASO UM CODIGO INSERIDO JA TENHA REGISTRO
     #Configurações tela
     tela_principal.withdraw()
     tela_registro = tk.Toplevel(tela_principal)
@@ -380,14 +500,14 @@ tela_principal = tk.Tk(className='Epipy')
 screen_width = tela_principal.winfo_screenwidth()
 screen_width = (screen_width/2) - (500/2)
 screen_height = tela_principal.winfo_screenheight()
-screen_height = (screen_height/2) - (500/2)  
+screen_height = (screen_height/2) - (535/2)  
 
 #Vai caraio
 icone = PhotoImage(file='icon.png')
 tela_principal.iconphoto(True,icone)
 
 
-tela_principal.geometry('500x500+%d+%d' % (screen_width, screen_height)) #Tamanho
+tela_principal.geometry('500x535+%d+%d' % (screen_width, screen_height)) #Tamanho
 titulo=tk.Label(tela_principal, text='Controle de Entrega de EPI', font=('Terminal', '20', 'bold italic'), bg='gray90', wraplength='400')
 tela_principal.configure(bg='gray90')
 logo = tk.Label(tela_principal, image=icone, bg='gray90')
@@ -397,14 +517,16 @@ movimentButton = tk.Button(tela_principal,font=('System','3'), text="Movimento",
 registerButton = tk.Button(tela_principal,font=('System','3') ,text="Registro", command=lambda:telaRegistro(), height=1, width=20, border=10)
 epiButton = tk.Button(tela_principal,font=('System','3') ,command=lambda:telaRegEpi(),text="Cadastrar EPI", height=1, width=20, border=10)
 sobreButton = tk.Button(tela_principal, font=('System','3'),text="Sobre", command=lambda:telaSobre(),height=1, width=5, border=5)
+visualizarButton = tk.Button(tela_principal,font=('System','3'), text="Visualizar", command=lambda:telaVisualizar(), height=1, width=20, border=10)
 
-movimentButton.place(x=165, y=300)
-registerButton.place(x=165, y=350)
-epiButton.place(x=165, y=400)
-sobreButton.place(x=440, y=462)
+movimentButton.place(x=165, y=290)
+registerButton.place(x=165, y=340)
+epiButton.place(x=165, y=390)
+sobreButton.place(x=440, y=497)
+visualizarButton.place(x=165, y=440)
 titulo.place(x=80, y=220)
 logo.place(x=155, y=0)
-version.place(x=5, y=480)
+version.place(x=5, y=510)
 
 tela_principal.resizable(0,0)
 
